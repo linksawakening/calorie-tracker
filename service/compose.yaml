@@ -1,0 +1,24 @@
+services:
+  garmin-sync:
+    build: ./service
+    container_name: garmin-sync
+    restart: unless-stopped
+    ports:
+      - "8700:8700"
+    environment:
+      - GARMIN_EMAIL=${GARMIN_EMAIL}
+      - GARMIN_PASSWORD=${GARMIN_PASSWORD}
+      - GARMIN_SYNC_API_KEY=${GARMIN_SYNC_API_KEY}
+    volumes:
+      - garmin-tokens:/root/.garminconnect
+    labels:
+      - "autoheal=true"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8700/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+volumes:
+  garmin-tokens:
