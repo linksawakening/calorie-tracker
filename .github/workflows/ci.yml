@@ -27,7 +27,7 @@ jobs:
         working-directory: ${{ matrix.component == 'service' && 'service' || '.' }}
         run: |
           uv sync --extra dev
-          uv run ruff check src/ tests/ 2>/dev/null || true
+          uv run ruff check src/ tests/
           uv run ruff format --check src/ tests/
-          uv run mypy src/ 2>/dev/null || true
+          uv run mypy src/
           uv run pytest -v
