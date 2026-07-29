@@ -203,6 +203,7 @@ All configuration is via environment variables:
 | `GARMIN_SYNC_URL` | For Garmin sync | URL of the sync service (default: `http://localhost:8700`) |
 | `GARMIN_SYNC_API_KEY` | For Garmin sync | Shared API key for the sync service |
 | `CALTRACK_BODY_WEIGHT_LBS` | No | Fallback body weight for macros if no Garmin scale data (default: 180.0) |
+| `CALTRACK_TZ` | No | Timezone for date computation (default: `America/Los_Angeles`) |
 
 ## Development
 

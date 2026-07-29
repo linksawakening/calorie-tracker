@@ -6,11 +6,13 @@ Handles schema creation, expenditure logging (Garmin), intake logging
 
 from __future__ import annotations
 
+import os
 import sqlite3
 from dataclasses import dataclass
-from datetime import date, datetime
+from datetime import datetime
 from pathlib import Path
 from typing import Any
+from zoneinfo import ZoneInfo
 
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS expenditure (
@@ -415,10 +417,18 @@ def get_date_range_summary(
 
 
 def today_str() -> str:
-    """Return today's date as YYYY-MM-DD string."""
-    return date.today().isoformat()
+    """Return today's date as YYYY-MM-DD string.
+
+    Uses CALTRACK_TZ env var (default: America/Los_Angeles) so date
+    computation is consistent regardless of system timezone.
+    """
+    tz_name = os.environ.get("CALTRACK_TZ", "America/Los_Angeles")
+    tz = ZoneInfo(tz_name)
+    return datetime.now(tz).date().isoformat()
 
 
 def now_iso() -> str:
     """Return current timestamp as ISO string."""
-    return datetime.now().isoformat()
+    tz_name = os.environ.get("CALTRACK_TZ", "America/Los_Angeles")
+    tz = ZoneInfo(tz_name)
+    return datetime.now(tz).isoformat()

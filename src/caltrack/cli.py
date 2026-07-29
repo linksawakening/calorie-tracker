@@ -180,7 +180,7 @@ def summary(days: int) -> None:
     conn = get_connection()
     from datetime import date, timedelta
 
-    end = date.today()
+    end = date.fromisoformat(today_str())
     start = end - timedelta(days=days - 1)
     start_str = start.isoformat()
     end_str = end.isoformat()
@@ -334,7 +334,7 @@ def sync(day: str | None, date_range: bool, check: bool) -> None:
     if date_range:
         from datetime import date, timedelta
 
-        end = date.today()
+        end = date.fromisoformat(today_str())
         start = end - timedelta(days=6)
         records = sync_garmin_range(conn, start.isoformat(), end.isoformat())
         click.echo(f"✅ Synced {len(records)} days from Garmin")

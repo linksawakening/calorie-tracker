@@ -9,12 +9,11 @@ from __future__ import annotations
 
 import logging
 import os
-from datetime import date
 from typing import Any
 
 import httpx
 
-from caltrack.db import ExpenditureRecord, upsert_expenditure
+from caltrack.db import ExpenditureRecord, today_str, upsert_expenditure
 
 logger = logging.getLogger(__name__)
 
@@ -64,7 +63,7 @@ def sync_garmin_day(conn: Any, day: str | None = None) -> ExpenditureRecord | No
         ExpenditureRecord if data was synced, None if no data available.
     """
     if day is None:
-        day = date.today().isoformat()
+        day = today_str()
 
     url = f"{_get_service_url()}/calories/{day}"
     try:

@@ -13,6 +13,7 @@ services:
       - GARMIN_PASSWORD=${GARMIN_PASSWORD}
       - GARMIN_SYNC_API_KEY=${GARMIN_SYNC_API_KEY}
       - GARMIN_DATA_TYPES=${GARMIN_DATA_TYPES:-}
+      - TZ=${TZ:-America/Los_Angeles}
     volumes:
       - garmin-tokens:/root/.garminconnect
     labels:
