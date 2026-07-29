@@ -149,6 +149,28 @@ def _parse_summary(data: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def _safe_float(value: Any) -> float | None:
+    """Convert to float, returning None for missing/None values."""
+    if value is None:
+        return None
+    try:
+        f = float(value)
+        return f if f > 0 else None
+    except (TypeError, ValueError):
+        return None
+
+
+def _safe_int(value: Any) -> int | None:
+    """Convert to int, returning None for missing/None values."""
+    if value is None:
+        return None
+    try:
+        i = int(value)
+        return i if i > 0 else None
+    except (TypeError, ValueError):
+        return None
+
+
 def _parse_body_composition(data: dict[str, Any]) -> dict[str, Any]:
     """Parse get_body_composition response."""
     total_average = data.get("totalAverage") or {}
@@ -156,12 +178,12 @@ def _parse_body_composition(data: dict[str, Any]) -> dict[str, Any]:
         return {"available": False}
     return {
         "available": True,
-        "weight_kg": float(total_average.get("weight", 0)) or None,
-        "bmi": float(total_average.get("bmi", 0)) or None,
-        "body_fat_pct": float(total_average.get("bodyFat", 0)) or None,
-        "muscle_mass_kg": float(total_average.get("muscleMass", 0)) or None,
-        "bone_mass_kg": float(total_average.get("boneMass", 0)) or None,
-        "body_water_pct": float(total_average.get("bodyWater", 0)) or None,
+        "weight_kg": _safe_float(total_average.get("weight")),
+        "bmi": _safe_float(total_average.get("bmi")),
+        "body_fat_pct": _safe_float(total_average.get("bodyFat")),
+        "muscle_mass_kg": _safe_float(total_average.get("muscleMass")),
+        "bone_mass_kg": _safe_float(total_average.get("boneMass")),
+        "body_water_pct": _safe_float(total_average.get("bodyWater")),
     }
 
 
@@ -195,7 +217,7 @@ def _parse_activities(data: list[dict[str, Any]] | dict[str, Any]) -> dict[str, 
                 "start_time": a.get("startTimeLocal", ""),
                 "duration_seconds": int(a.get("duration", 0)) or None,
                 "calories": int(a.get("calories", 0)) or None,
-                "distance_km": float(a.get("distance", 0)) or None,
+                "distance_km": _safe_float(a.get("distance")),
                 "average_hr": int(a.get("averageHR", 0)) or None,
                 "max_hr": int(a.get("maxHR", 0)) or None,
             }
@@ -255,9 +277,9 @@ def _parse_respiration(data: dict[str, Any]) -> dict[str, Any]:
     """Parse get_respiration_data response."""
     return {
         "available": True,
-        "avg_respiration": float(data.get("avgRespirationValue", 0)) or None,
-        "min_respiration": float(data.get("minRespirationValue", 0)) or None,
-        "max_respiration": float(data.get("maxRespirationValue", 0)) or None,
+        "avg_respiration": _safe_float(data.get("avgRespirationValue")),
+        "min_respiration": _safe_float(data.get("minRespirationValue")),
+        "max_respiration": _safe_float(data.get("maxRespirationValue")),
     }
 
 
@@ -265,9 +287,9 @@ def _parse_spo2(data: dict[str, Any]) -> dict[str, Any]:
     """Parse get_spo2_data response."""
     return {
         "available": True,
-        "avg_spo2": float(data.get("averageSpO2", 0)) or None,
-        "min_spo2": float(data.get("minSpO2", 0)) or None,
-        "max_spo2": float(data.get("maxSpO2", 0)) or None,
+        "avg_spo2": _safe_float(data.get("averageSpO2")),
+        "min_spo2": _safe_float(data.get("minSpO2")),
+        "max_spo2": _safe_float(data.get("maxSpO2")),
     }
 
 
@@ -275,8 +297,8 @@ def _parse_hydration(data: dict[str, Any]) -> dict[str, Any]:
     """Parse get_hydration_data response."""
     return {
         "available": True,
-        "hydration_ml": float(data.get("valueInML", 0)) or None,
-        "goal_ml": float(data.get("goalInML", 0)) or None,
+        "hydration_ml": _safe_float(data.get("valueInML")),
+        "goal_ml": _safe_float(data.get("goalInML")),
     }
 
 
