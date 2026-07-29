@@ -1,6 +1,9 @@
 services:
   garmin-sync:
-    build: ./service
+    # Use pre-built image from GitHub Container Registry
+    image: ghcr.io/linksawakening/calorie-tracker-garmin-sync:latest
+    # Or build from source:
+    # build: ./service
     container_name: garmin-sync
     restart: unless-stopped
     ports:
@@ -9,12 +12,13 @@ services:
       - GARMIN_EMAIL=${GARMIN_EMAIL}
       - GARMIN_PASSWORD=${GARMIN_PASSWORD}
       - GARMIN_SYNC_API_KEY=${GARMIN_SYNC_API_KEY}
+      - GARMIN_DATA_TYPES=${GARMIN_DATA_TYPES:-}
     volumes:
       - garmin-tokens:/root/.garminconnect
     labels:
       - "autoheal=true"
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8700/health"]
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8700/health').read()"]
       interval: 30s
       timeout: 5s
       retries: 3

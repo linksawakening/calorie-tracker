@@ -36,7 +36,7 @@ only — never to the Garmin credentials themselves.
 ### 1. Clone and install
 
 ```bash
-git clone <repo-url>
+git clone https://github.com/linksawakening/calorie-tracker.git
 cd calorie-tracker
 uv sync
 ```
@@ -71,10 +71,25 @@ Generate a random API key:
 python -c "import secrets; print(secrets.token_urlsafe(32))"
 ```
 
-### 3. Deploy the Garmin sync service
+### 3. Deploy the Garmin sync service (Docker)
 
-See [`service/SETUP.md`](service/SETUP.md) for full deployment instructions.
-Quick version:
+The pre-built image is published to GitHub Container Registry
+automatically on every push to `main` and on version tags.
+
+**Option A: Pre-built image (recommended)**
+
+```bash
+cd service
+cp .env.example .env
+# Edit .env with your Garmin email, password, and the API key from step 2
+chmod 600 .env
+docker compose up -d
+```
+
+The compose file pulls `ghcr.io/linksawakening/calorie-tracker-garmin-sync:latest`
+by default. No build step needed.
+
+**Option B: Build from source**
 
 ```bash
 cd service
@@ -84,7 +99,27 @@ chmod 600 .env
 docker compose up -d --build
 ```
 
-Verify the service is running:
+To use the build-from-source option, uncomment the `build:` line and
+comment out the `image:` line in `compose.yaml`.
+
+**Option C: Manual docker run (no compose)**
+
+```bash
+cd service
+docker build -t garmin-sync .
+docker run -d \
+  --name garmin-sync \
+  --restart unless-stopped \
+  -p 8700:8700 \
+  -e GARMIN_EMAIL=your.email@example.com \
+  -e GARMIN_PASSWORD=your-password \
+  -e GARMIN_SYNC_API_KEY=your-api-key \
+  -e GARMIN_DATA_TYPES=summary,sleep,activities \
+  -v garmin-tokens:/root/.garminconnect \
+  garmin-sync
+```
+
+**Verify the service is running:**
 
 ```bash
 curl http://localhost:8700/health
@@ -185,6 +220,30 @@ mypy src/
 ruff check src/ tests/
 ruff format --check src/ tests/
 ```
+
+## CI/CD
+
+GitHub Actions workflows handle automated builds and releases:
+
+- **CI** (`.github/workflows/ci.yml`) — runs ruff, mypy, and pytest on
+  every PR and push to `main`
+- **Docker Release** (`.github/workflows/docker-release.yml`) — builds the
+  Docker image and pushes to `ghcr.io/linksawakening/calorie-tracker-garmin-sync`
+  on every push to `main`. Tags: `latest`, `sha-<hash>`, and version tags
+  from `pyproject.toml` on release. Also creates a GitHub Release with
+  the image pull command when the version in `service/pyproject.toml` changes.
+
+### Updating the release version
+
+Bump the version in `service/pyproject.toml`:
+
+```toml
+version = "0.3.0"
+```
+
+Push to `main`. The workflow will:
+1. Build and push the Docker image tagged with the new version
+2. Create a GitHub Release `v0.3.0` with the image pull instructions
 
 ## License
 

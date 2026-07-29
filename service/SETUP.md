@@ -49,7 +49,19 @@ GARMIN_SYNC_API_KEY=<the key you generated in step 1>
 GARMIN_DATA_TYPES=summary,sleep,activities,hrv
 ```
 
-### 3. On the service host — build and start the container
+### 3. On the service host — start the container
+
+**Using the pre-built image (recommended):**
+
+```bash
+cd /opt/garmin-sync
+docker compose up -d
+```
+
+The compose file pulls `ghcr.io/linksawakening/calorie-tracker-garmin-sync:latest`
+automatically.
+
+**Building from source:**
 
 ```bash
 cd /opt/garmin-sync
