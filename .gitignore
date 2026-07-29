@@ -1,0 +1,31 @@
+# Personal health data — never commit
+STATS.md
+secrets/
+*.env
+garmin_tokens.json
+service/.env
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+dist/
+build/
+
+# Cache
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+
+# SQLite
+*.db
+*.sqlite
+*.sqlite3
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
