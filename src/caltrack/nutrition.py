@@ -180,12 +180,12 @@ def search_openfoodfacts(barcode: str) -> FoodResult | None:
         return None
 
     product = data.get("product", {})
-    energy_kcal = product.get("energy_100g", 0)
-    # OFF stores energy in kJ; convert if > 1000 (rough heuristic)
-    if energy_kcal and energy_kcal > 1000:
-        energy_kcal = int(energy_kcal / 4.184)
+    # OFF always stores energy in kJ; convert to kcal
+    energy_kj = product.get("energy_100g", 0)
+    if energy_kj:
+        energy_kcal = int(round(float(energy_kj) / 4.184))
     else:
-        energy_kcal = int(energy_kcal or 0)
+        energy_kcal = 0
 
     return FoodResult(
         name=product.get("product_name", "Unknown Product"),

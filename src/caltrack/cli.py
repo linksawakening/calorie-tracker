@@ -308,6 +308,28 @@ def summarize(day: str | None) -> None:
 
 @main.command()
 @click.option("--date", "day", default=None, help="Date YYYY-MM-DD (default: today)")
+@click.option("--no-sync", is_flag=True, help="Skip Garmin sync, use DB data only")
+def report(day: str | None, no_sync: bool) -> None:
+    """Generate a full daily nutrition report.
+
+    Syncs Garmin expenditure, computes meal-by-meal breakdown with macros,
+    shows deficit and weight-loss trajectory, plus a 7-day rolling trend.
+
+    Examples:
+      caltrack report                    # today's report with Garmin sync
+      caltrack report --date 2026-07-28  # specific date
+      caltrack report --no-sync          # skip Garmin sync
+    """
+    from caltrack.report import generate_report
+
+    day = day or today_str()
+    conn = get_connection()
+    output = generate_report(conn, day, sync_garmin=not no_sync)
+    click.echo(output)
+
+
+@main.command()
+@click.option("--date", "day", default=None, help="Date YYYY-MM-DD (default: today)")
 @click.option("--range", "date_range", is_flag=True, help="Sync last 7 days")
 @click.option("--check", is_flag=True, help="Check if service is reachable")
 def sync(day: str | None, date_range: bool, check: bool) -> None:
