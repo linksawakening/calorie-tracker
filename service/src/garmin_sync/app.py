@@ -430,7 +430,10 @@ def _fetch_data_type(data_type: str, day: str) -> dict[str, Any]:
         raw_results.append(raw)
 
     # Single-method types: pass single result
-    result = parser(raw_results[0]) if len(raw_results) == 1 else parser(*raw_results)
+    if len(raw_results) == 1:
+        result: dict[str, Any] = parser(raw_results[0])
+    else:
+        result = parser(*raw_results)
 
     result["data_type"] = data_type
     result["date"] = day
