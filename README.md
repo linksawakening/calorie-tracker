@@ -110,6 +110,19 @@ caltrack status
 caltrack summary
 ```
 
+## Garmin Data Types
+
+The sync service exposes 14 data types from Garmin Connect, configurable
+via the `GARMIN_DATA_TYPES` env var on the service. See
+[`service/SETUP.md`](service/SETUP.md) for the full list and configuration.
+
+The most useful for calorie tracking:
+- **summary** — calories, steps, HR, stress, body battery
+- **activities** — individual workouts with sport-specific calorie burns
+- **body_composition** — weight, BMI, body fat %
+- **sleep** — recovery quality (affects TDEE)
+- **hrv** — recovery indicator
+
 ## CLI Commands
 
 | Command | Description |

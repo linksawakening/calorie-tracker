@@ -1,7 +1,7 @@
 [project]
 name = "garmin-sync-service"
-version = "0.1.0"
-description = "Standalone Garmin Connect calorie data API"
+version = "0.2.0"
+description = "Standalone Garmin Connect health data API"
 requires-python = ">=3.11"
 dependencies = [
     "fastapi",
@@ -10,9 +10,18 @@ dependencies = [
     "curl-cffi",
 ]
 
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "httpx",
+]
+
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/garmin_sync"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
