@@ -116,7 +116,7 @@ DEFAULT_ENABLED = ",".join(DATA_TYPES.keys())
 
 def _get_enabled_types() -> set[str]:
     """Return the set of enabled data types from env var."""
-    raw = os.environ.get("GARMIN_DATA_TYPES", DEFAULT_ENABLED)
+    raw = os.environ.get("GARMIN_DATA_TYPES") or DEFAULT_ENABLED
     requested = {t.strip() for t in raw.split(",") if t.strip()}
     return requested & set(DATA_TYPES.keys())
 
